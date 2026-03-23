@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gmail MCP Server — Setup Wizard</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --accent: #1a73e8;
+      --accent-hover: #1558b0;
+      --success: #188038;
+      --error: #c5221f;
+      --bg: #f8f9fa;
+      --card: #fff;
+      --border: #dadce0;
+      --text: #202124;
+      --muted: #5f6368;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px 64px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    header h1 { font-size: 1.6rem; font-weight: 600; }
+    header p  { color: var(--muted); margin-top: 6px; font-size: 0.95rem; }
+
+    /* ── Step indicator ── */
+    .steps {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 32px;
+      width: 100%;
+      max-width: 600px;
+    }
+    .step-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      position: relative;
+    }
+    .step-item:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      top: 16px;
+      left: 50%;
+      width: 100%;
+      height: 2px;
+      background: var(--border);
+      z-index: 0;
+    }
+    .step-item.done:not(:last-child)::after  { background: var(--accent); }
+    .step-circle {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      background: var(--card);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem; font-weight: 600;
+      position: relative; z-index: 1;
+      transition: background .2s, border-color .2s;
+    }
+    .step-item.active .step-circle { border-color: var(--accent); color: var(--accent); }
+    .step-item.done .step-circle   { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .step-item.done .step-circle::after { content: '✓'; }
+    .step-item.done .step-num { display: none; }
+    .step-label { font-size: 0.75rem; color: var(--muted); margin-top: 6px; text-align: center; }
+    .step-item.active .step-label { color: var(--accent); font-weight: 600; }
+
+    /* ── Card ── */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+      width: 100%;
+      max-width: 600px;
+      box-shadow: 0 1px 3px rgba(0,0,0,.08);
+    }
+    .card h2 { font-size: 1.15rem; margin-bottom: 8px; }
+    .card p  { color: var(--muted); font-size: 0.9rem; margin-bottom: 20px; line-height: 1.5; }
+
+    /* ── Form elements ── */
+    label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-bottom: 4px;
+      color: var(--text);
+    }
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.9rem;
+      margin-bottom: 16px;
+      transition: border-color .15s;
+      background: #fff;
+    }
+    input:focus { outline: none; border-color: var(--accent); }
+
+    .scope-group { margin-bottom: 20px; }
+    .scope-option {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: border-color .15s, background .15s;
+    }
+    .scope-option:hover { background: #f0f4ff; }
+    .scope-option input[type="radio"] { margin-top: 2px; accent-color: var(--accent); }
+    .scope-option .scope-name { font-weight: 500; font-size: 0.9rem; }
+    .scope-option .scope-desc { font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
+    .scope-option.selected { border-color: var(--accent); background: #e8f0fe; }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 10px 20px;
+      border: none; border-radius: 6px;
+      font-size: 0.9rem; font-weight: 500; cursor: pointer;
+      transition: background .15s, opacity .15s;
+    }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover:not(:disabled) { background: var(--accent-hover); }
+    .btn-primary:disabled { opacity: .6; cursor: not-allowed; }
+    .btn-secondary {
+      background: transparent; color: var(--accent);
+      border: 1px solid var(--accent);
+    }
+    .btn-secondary:hover { background: #e8f0fe; }
+    .btn-full { width: 100%; }
+    .btn-group { display: flex; gap: 10px; margin-top: 4px; }
+
+    /* ── Alert ── */
+    .alert {
+      padding: 12px 16px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      margin-bottom: 16px;
+      display: none;
+    }
+    .alert.show { display: block; }
+    .alert-error   { background: #fce8e6; color: var(--error); border: 1px solid #f5c6c5; }
+    .alert-success { background: #e6f4ea; color: var(--success); border: 1px solid #b7dfbe; }
+    .alert-info    { background: #e8f0fe; color: var(--accent); border: 1px solid #c5d9f5; }
+
+    /* ── Success panel ── */
+    .success-icon { font-size: 3rem; text-align: center; margin-bottom: 12px; }
+    .stat-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 12px; margin: 20px 0;
+    }
+    .stat-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      text-align: center;
+    }
+    .stat-card .val { font-size: 1.5rem; font-weight: 600; color: var(--accent); }
+    .stat-card .lbl { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+
+    /* ── Code block ── */
+    pre {
+      background: #2d2d2d; color: #f8f8f2;
+      padding: 14px 16px; border-radius: 8px;
+      font-size: 0.78rem; line-height: 1.6;
+      overflow-x: auto; margin: 12px 0;
+      white-space: pre;
+    }
+
+    /* ── Spinner ── */
+    .spinner {
+      display: inline-block;
+      width: 18px; height: 18px;
+      border: 2px solid rgba(255,255,255,.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .6s linear infinite;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .hidden { display: none !important; }
+    a { color: var(--accent); }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>📧 Gmail MCP Server</h1>
+  <p>Interactive Setup Wizard</p>
+</header>
+
+<!-- Step indicator -->
+<div class="steps" id="stepIndicator">
+  <div class="step-item active" id="si-1">
+    <div class="step-circle"><span class="step-num">1</span></div>
+    <div class="step-label">Credentials</div>
+  </div>
+  <div class="step-item" id="si-2">
+    <div class="step-circle"><span class="step-num">2</span></div>
+    <div class="step-label">Scopes</div>
+  </div>
+  <div class="step-item" id="si-3">
+    <div class="step-circle"><span class="step-num">3</span></div>
+    <div class="step-label">Authorize</div>
+  </div>
+  <div class="step-item" id="si-4">
+    <div class="step-circle"><span class="step-num">4</span></div>
+    <div class="step-label">Done</div>
+  </div>
+</div>
+
+<!-- ── Step 1: Credentials ── -->
+<div class="card" id="step1">
+  <h2>Step 1 — OAuth2 Credentials</h2>
+  <p>
+    Enter your Google Cloud OAuth2 client credentials.
+    Go to <a href="https://console.cloud.google.com/apis/credentials" target="_blank">Google Cloud Console</a>
+    → Create Credentials → OAuth 2.0 Client ID (Desktop app).<br><br>
+    Add <code>http://localhost:3000/oauth/callback</code> as an Authorized redirect URI.
+  </p>
+
+  <div id="alertStep1" class="alert"></div>
+
+  <label for="clientId">Client ID</label>
+  <input type="text" id="clientId" placeholder="xxxxxxxxxxxx.apps.googleusercontent.com" autocomplete="off" />
+
+  <label for="clientSecret">Client Secret</label>
+  <input type="password" id="clientSecret" placeholder="GOCSPX-…" autocomplete="off" />
+
+  <div class="btn-group">
+    <button class="btn btn-primary btn-full" id="btnStep1" onclick="submitStep1()">
+      Continue →
+    </button>
+  </div>
+</div>
+
+<!-- ── Step 2: Scopes ── -->
+<div class="card hidden" id="step2">
+  <h2>Step 2 — Permission Scopes</h2>
+  <p>Choose the level of access the MCP server will have to your Gmail account.</p>
+
+  <div id="alertStep2" class="alert"></div>
+
+  <div class="scope-group">
+    <label class="scope-option selected" id="opt-full" onclick="selectScope('full')">
+      <input type="radio" name="scope" value="full" checked />
+      <div>
+        <div class="scope-name">🔓 Full access <em>(recommended)</em></div>
+        <div class="scope-desc">Read, send, modify labels, create drafts, delete emails</div>
+      </div>
+    </label>
+    <label class="scope-option" id="opt-send" onclick="selectScope('send')">
+      <input type="radio" name="scope" value="send" />
+      <div>
+        <div class="scope-name">📤 Read + Send</div>
+        <div class="scope-desc">Read emails and send new ones (no label management or delete)</div>
+      </div>
+    </label>
+    <label class="scope-option" id="opt-readonly" onclick="selectScope('readonly')">
+      <input type="radio" name="scope" value="readonly" />
+      <div>
+        <div class="scope-name">👁️ Read-only</div>
+        <div class="scope-desc">List, read, and search emails — no modifications</div>
+      </div>
+    </label>
+  </div>
+
+  <div class="btn-group">
+    <button class="btn btn-secondary" onclick="goToStep(1)">← Back</button>
+    <button class="btn btn-primary btn-full" id="btnStep2" onclick="submitStep2()">
+      Continue →
+    </button>
+  </div>
+</div>
+
+<!-- ── Step 3: Authorize ── -->
+<div class="card hidden" id="step3">
+  <h2>Step 3 — Authorize with Google</h2>
+  <p>
+    Click the button below to open the Google authorization page. Sign in with the
+    Gmail account you want to use, then grant the requested permissions.
+    You'll be redirected back here automatically.
+  </p>
+
+  <div id="alertStep3" class="alert"></div>
+
+  <div id="authBtn">
+    <button class="btn btn-primary btn-full" style="font-size:1rem;padding:14px;" onclick="startAuth()">
+      🔐 &nbsp; Authorize Gmail Access
+    </button>
+  </div>
+
+  <div class="btn-group" style="margin-top:16px;">
+    <button class="btn btn-secondary" onclick="goToStep(2)">← Back</button>
+  </div>
+</div>
+
+<!-- ── Step 4: Success ── -->
+<div class="card hidden" id="step4">
+  <div class="success-icon">🎉</div>
+  <h2 style="text-align:center">Setup Complete!</h2>
+  <p style="text-align:center;margin-bottom:16px">
+    Gmail MCP Server is ready. Authenticated as:<br>
+    <strong id="connectedEmail" style="font-size:1rem;color:var(--accent)"></strong>
+  </p>
+
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="val" id="statMessages">—</div>
+      <div class="lbl">Total Messages</div>
+    </div>
+    <div class="stat-card">
+      <div class="val" id="statThreads">—</div>
+      <div class="lbl">Total Threads</div>
+    </div>
+  </div>
+
+  <p style="margin-bottom:8px"><strong>Start the MCP server:</strong></p>
+  <pre># Local
+npm start
+
+# Docker
+docker compose up</pre>
+
+  <p style="margin-bottom:8px"><strong>Add to Claude Desktop config:</strong></p>
+  <pre id="mcpConfig">{
+  "mcpServers": {
+    "gmail": {
+      "command": "node",
+      "args": ["/absolute/path/to/dist/index.js"]
+    }
+  }
+}</pre>
+
+  <p style="font-size:0.82rem;color:var(--muted);margin-top:12px;">
+    Credentials are saved in <code>credentials/</code>. You can stop this setup server with Ctrl+C.
+  </p>
+</div>
+
+<!-- ────────────────── JavaScript ────────────────── -->
+<script>
+  // ── State ───────────────────────────────────────────────────────────────────
+  let currentStep = 1;
+  let selectedScope = 'full';
+
+  const SCOPE_MAP = {
+    full: [
+      'https://www.googleapis.com/auth/gmail.modify',
+      'https://www.googleapis.com/auth/userinfo.profile',
+      'https://www.googleapis.com/auth/userinfo.email',
+    ],
+    send: [
+      'https://www.googleapis.com/auth/gmail.readonly',
+      'https://www.googleapis.com/auth/gmail.send',
+      'https://www.googleapis.com/auth/userinfo.profile',
+      'https://www.googleapis.com/auth/userinfo.email',
+    ],
+    readonly: [
+      'https://www.googleapis.com/auth/gmail.readonly',
+      'https://www.googleapis.com/auth/userinfo.profile',
+      'https://www.googleapis.com/auth/userinfo.email',
+    ],
+  };
+
+  // ── Helpers ─────────────────────────────────────────────────────────────────
+
+  function showAlert(alertId, type, message) {
+    const el = document.getElementById(alertId);
+    el.className = `alert alert-${type} show`;
+    el.textContent = message;
+  }
+
+  function hideAlert(alertId) {
+    const el = document.getElementById(alertId);
+    el.className = 'alert';
+  }
+
+  function setLoading(btnId, loading, label = 'Continue →') {
+    const btn = document.getElementById(btnId);
+    btn.disabled = loading;
+    btn.innerHTML = loading
+      ? '<span class="spinner"></span> Loading…'
+      : label;
+  }
+
+  function goToStep(n) {
+    // Hide all cards
+    [1, 2, 3, 4].forEach(i => {
+      document.getElementById(`step${i}`).classList.add('hidden');
+      const si = document.getElementById(`si-${i}`);
+      si.classList.remove('active', 'done');
+      if (i < n) si.classList.add('done');
+    });
+    document.getElementById(`step${n}`).classList.remove('hidden');
+    document.getElementById(`si-${n}`).classList.add('active');
+    currentStep = n;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function selectScope(val) {
+    selectedScope = val;
+    ['full', 'send', 'readonly'].forEach(s => {
+      document.getElementById(`opt-${s}`).classList.toggle('selected', s === val);
+      document.querySelector(`#opt-${s} input[type=radio]`).checked = (s === val);
+    });
+  }
+
+  // ── Step 1 ───────────────────────────────────────────────────────────────────
+
+  async function submitStep1() {
+    hideAlert('alertStep1');
+    const clientId = document.getElementById('clientId').value.trim();
+    const clientSecret = document.getElementById('clientSecret').value.trim();
+
+    if (!clientId || !clientSecret) {
+      showAlert('alertStep1', 'error', 'Both Client ID and Client Secret are required.');
+      return;
+    }
+
+    setLoading('btnStep1', true);
+    try {
+      const res = await fetch('/api/save-config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ clientId, clientSecret }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to save credentials.');
+      goToStep(2);
+    } catch (err) {
+      showAlert('alertStep1', 'error', err.message);
+    } finally {
+      setLoading('btnStep1', false);
+    }
+  }
+
+  // ── Step 2 ───────────────────────────────────────────────────────────────────
+
+  async function submitStep2() {
+    hideAlert('alertStep2');
+    const scopes = SCOPE_MAP[selectedScope];
+    setLoading('btnStep2', true);
+    try {
+      const res = await fetch('/api/set-scopes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ scopes }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to set scopes.');
+      goToStep(3);
+    } catch (err) {
+      showAlert('alertStep2', 'error', err.message);
+    } finally {
+      setLoading('btnStep2', false);
+    }
+  }
+
+  // ── Step 3 ───────────────────────────────────────────────────────────────────
+
+  async function startAuth() {
+    hideAlert('alertStep3');
+    try {
+      const res = await fetch('/api/auth-url');
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to get auth URL.');
+      // Redirect the current tab to Google — it will redirect back to /oauth/callback
+      window.location.href = data.url;
+    } catch (err) {
+      showAlert('alertStep3', 'error', err.message);
+    }
+  }
+
+  // ── Detect redirect-back result ───────────────────────────────────────────────
+
+  function init() {
+    const params = new URLSearchParams(window.location.search);
+
+    if (params.get('success') === 'true') {
+      const email    = params.get('email') || '';
+      const messages = params.get('messages') || '—';
+      const threads  = params.get('threads') || '—';
+
+      document.getElementById('connectedEmail').textContent = email;
+      document.getElementById('statMessages').textContent = Number(messages).toLocaleString();
+      document.getElementById('statThreads').textContent = Number(threads).toLocaleString();
+
+      goToStep(4);
+      // Mark all previous steps done
+      [1,2,3].forEach(i => document.getElementById(`si-${i}`).classList.add('done'));
+
+      // Clean the URL
+      window.history.replaceState({}, '', '/');
+      return;
+    }
+
+    const errParam = params.get('error');
+    if (errParam) {
+      goToStep(3);
+      showAlert('alertStep3', 'error', `Authorization failed: ${decodeURIComponent(errParam)}`);
+      window.history.replaceState({}, '', '/');
+    }
+  }
+
+  init();
+</script>
+</body>
+</html>

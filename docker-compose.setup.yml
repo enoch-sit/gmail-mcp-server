@@ -1,0 +1,36 @@
+# Gmail MCP Server — Web UI Setup Wizard
+#
+# Usage:
+#   docker compose -f docker-compose.setup.yml up
+#
+# Then open http://localhost:3000 in your browser to complete setup.
+# After finishing, tokens are saved to ./credentials/ on the host via the volume mount.
+
+version: '3.9'
+
+services:
+  gmail-mcp-setup:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    image: gmail-mcp-server:latest
+    container_name: gmail-mcp-setup
+
+    # Override the default CMD to run the Web UI wizard
+    command: ["node", "dist/setup/ui-server.js"]
+
+    # Expose the setup UI on port 3000
+    ports:
+      - "3000:3000"
+
+    # Mount credentials dir so the wizard can save tokens to the host
+    volumes:
+      - ./credentials:/app/credentials
+
+    environment:
+      - PORT=3000
+
+    # Keep the container running while you interact with the browser
+    stdin_open: true
+    tty: true

@@ -1,0 +1,38 @@
+# Gmail MCP Server — runtime
+#
+# Usage:
+#   docker compose up
+#
+# Credentials are supplied via environment variables (recommended for Docker)
+# OR by mounting a credentials/ directory that contains credentials.json + token.json.
+#
+# Environment variables take precedence over files.
+
+version: '3.9'
+
+services:
+  gmail-mcp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    image: gmail-mcp-server:latest
+    container_name: gmail-mcp-server
+
+    # ── Supply credentials via environment variables (recommended) ──────────
+    # Copy .env.example → .env and fill in your values, or set them directly.
+    environment:
+      - GMAIL_CLIENT_ID=${GMAIL_CLIENT_ID:-}
+      - GMAIL_CLIENT_SECRET=${GMAIL_CLIENT_SECRET:-}
+      - GMAIL_REFRESH_TOKEN=${GMAIL_REFRESH_TOKEN:-}
+      - GMAIL_REDIRECT_URI=${GMAIL_REDIRECT_URI:-http://localhost:3000/oauth/callback}
+
+    # ── Alternative: mount credentials files ────────────────────────────────
+    # volumes:
+    #   - ./credentials:/app/credentials:ro
+
+    # MCP servers use stdio — keep stdin open
+    stdin_open: true
+    tty: true
+
+    restart: unless-stopped

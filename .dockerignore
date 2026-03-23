@@ -1,0 +1,10 @@
+# Exclude these from the Docker build context
+node_modules/
+dist/
+.git/
+credentials/
+.env
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
