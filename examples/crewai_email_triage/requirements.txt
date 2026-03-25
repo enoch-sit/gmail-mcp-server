@@ -1,0 +1,11 @@
+# Gmail MCP + CrewAI example dependencies
+# Install with:  pip install -r requirements.txt
+
+# Core CrewAI framework (>= 0.100 required for MCPServerStdio DSL)
+crewai>=0.100
+
+# crewai-tools with MCP extras (MCPServerAdapter for older crewai versions)
+crewai-tools[mcp]>=0.14
+
+# MCP Python SDK (required for both integration styles)
+mcp>=1.0

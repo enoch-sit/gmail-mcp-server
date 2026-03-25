@@ -1,0 +1,49 @@
+{
+  // VS Code MCP server configuration for the Gmail MCP Server.
+  // Docs: https://code.visualstudio.com/docs/copilot/chat/mcp-servers
+  //
+  // Prerequisites (Docker variant — active below):
+  //   1. docker build -t gmail-mcp-server .
+  //   2. Set the three env vars (or run: npm run setup:cli to obtain them)
+  //
+  // After saving this file VS Code will prompt you to "Start" the server.
+  // Open a Copilot Chat and ask: "Use Gmail to show my profile"
+  "servers": {
+    "gmail": {
+      "type": "stdio",
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm",
+        "-i",
+        "-e", "GMAIL_CLIENT_ID",
+        "-e", "GMAIL_CLIENT_SECRET",
+        "-e", "GMAIL_REFRESH_TOKEN",
+        "-v", "${workspaceFolder}/credentials:/app/credentials:ro",
+        "gmail-mcp-server"
+      ],
+      "env": {
+        "GMAIL_CLIENT_ID": "${env:GMAIL_CLIENT_ID}",
+        "GMAIL_CLIENT_SECRET": "${env:GMAIL_CLIENT_SECRET}",
+        "GMAIL_REFRESH_TOKEN": "${env:GMAIL_REFRESH_TOKEN}"
+      }
+    }
+  }
+
+  // ── Local node alternative (no Docker) ───────────────────────────────────
+  // Uncomment and remove the Docker block above if you prefer to run node directly.
+  // Requires: npm install && npm run build
+  //
+  // "servers": {
+  //   "gmail": {
+  //     "type": "stdio",
+  //     "command": "node",
+  //     "args": ["${workspaceFolder}/dist/index.js"],
+  //     "env": {
+  //       "GMAIL_CLIENT_ID": "${env:GMAIL_CLIENT_ID}",
+  //       "GMAIL_CLIENT_SECRET": "${env:GMAIL_CLIENT_SECRET}",
+  //       "GMAIL_REFRESH_TOKEN": "${env:GMAIL_REFRESH_TOKEN}"
+  //     }
+  //   }
+  // }
+}

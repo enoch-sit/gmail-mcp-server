@@ -28,8 +28,9 @@ services:
       - GMAIL_REDIRECT_URI=${GMAIL_REDIRECT_URI:-http://localhost:3000/oauth/callback}
 
     # ── Alternative: mount credentials files ────────────────────────────────
-    # volumes:
-    #   - ./credentials:/app/credentials:ro
+    # Uncomment to persist token.json / credentials.json across container restarts.
+    volumes:
+      - ./credentials:/app/credentials
 
     # MCP servers use stdio — keep stdin open
     stdin_open: true

@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>CREWAI_VS_REACT.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="crewai-vs-react-agent--a-practical-guide-for-gmail-mcp">CrewAI vs ReAct Agent — A Practical Guide for Gmail MCP</h1>
+<blockquote>
+<p>This guide compares two mainstream approaches to building an AI agent that
+interacts with your Gmail inbox via MCP tools: a <strong>multi-agent CrewAI crew</strong>
+and a single <strong>ReAct (Reasoning + Acting) agent</strong>.  Both approaches use the
+same underlying Gmail MCP server — they differ in how they orchestrate the LLM
+and tools to accomplish a goal.</p>
+</blockquote>
+<hr>
+<h2 id="table-of-contents">Table of Contents</h2>
+<ul>
+<li><a href="#crewai-vs-react-agent--a-practical-guide-for-gmail-mcp">CrewAI vs ReAct Agent — A Practical Guide for Gmail MCP</a>
+<ul>
+<li><a href="#table-of-contents">Table of Contents</a></li>
+<li><a href="#1-what-is-the-mcp-connection">1. What is the MCP Connection?</a>
+<ul>
+<li><a href="#connection-steps-both-frameworks">Connection steps (both frameworks)</a></li>
+</ul>
+</li>
+<li><a href="#2-architecture-diagram">2. Architecture Diagram</a></li>
+<li><a href="#3-sequence-diagram--how-a-tool-call-flows">3. Sequence Diagram — How a Tool Call Flows</a></li>
+<li><a href="#5-technical-specification--mcp-connection">5. Technical Specification — MCP Connection</a>
+<ul>
+<li><a href="#41-transport-layer">4.1 Transport layer</a></li>
+<li><a href="#42-initialization-handshake">4.2 Initialization handshake</a></li>
+<li><a href="#43-tool-discovery">4.3 Tool discovery</a></li>
+<li><a href="#44-tool-invocation">4.4 Tool invocation</a></li>
+<li><a href="#45-response-format">4.5 Response format</a></li>
+<li><a href="#46-error-handling">4.6 Error handling</a></li>
+<li><a href="#47-process-lifecycle">4.7 Process lifecycle</a></li>
+<li><a href="#48-required-environment-variables">4.8 Required environment variables</a></li>
+</ul>
+</li>
+<li><a href="#5-crewai--multi-agent-orchestration">5. CrewAI — Multi-Agent Orchestration</a>
+<ul>
+<li><a href="#what-it-is">What it is</a></li>
+<li><a href="#how-the-mcp-connection-is-configured">How the MCP connection is configured</a></li>
+<li><a href="#key-characteristics">Key characteristics</a></li>
+</ul>
+</li>
+<li><a href="#6-react--single-agent-loop">6. ReAct — Single Agent Loop</a>
+<ul>
+<li><a href="#what-it-is-1">What it is</a></li>
+<li><a href="#how-the-mcp-connection-is-configured-1">How the MCP connection is configured</a></li>
+<li><a href="#key-characteristics-1">Key characteristics</a></li>
+</ul>
+</li>
+<li><a href="#7-side-by-side-code-comparison">7. Side-by-Side Code Comparison</a></li>
+<li><a href="#8-decision-guide">8. Decision Guide</a>
+<ul>
+<li><a href="#quick-reference-table">Quick-reference table</a></li>
+</ul>
+</li>
+<li><a href="#9-running-both-examples">9. Running Both Examples</a>
+<ul>
+<li><a href="#prerequisites">Prerequisites</a></li>
+<li><a href="#environment-variables">Environment variables</a></li>
+<li><a href="#run-the-crewai-example">Run the CrewAI example</a></li>
+<li><a href="#run-a-react-agent-inline-example">Run a ReAct agent (inline example)</a></li>
+</ul>
+</li>
+<li><a href="#further-reading">Further Reading</a></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="1-what-is-the-mcp-connection">1. What is the MCP Connection?</h2>
+<p><strong>MCP (Model Context Protocol)</strong> is an open standard that lets an AI agent call
+external capabilities — called <em>tools</em> — through a well-typed interface.  The
+Gmail MCP server in this repository exposes 12 tools (search_emails, read_email,
+send_email, etc.) over <strong>stdio transport</strong>: the Python (or Node) client spawns
+the server as a child process and communicates over standard input/output.</p>
+<p>There is <strong>no HTTP server, no network port, no REST API</strong>. The conversation
+between client and server uses the JSON-RPC-style MCP wire format written
+directly to <code>stdin</code> / <code>stdout</code>.</p>
+<h3 id="connection-steps-both-frameworks">Connection steps (both frameworks)</h3>
+<ol>
+<li>The Python process spawns <code>node dist/index.js</code> with OAuth credentials in
+the environment.</li>
+<li>MCP performs a capability handshake — the server returns its 12-tool schema.</li>
+<li>When the LLM decides to call a tool, the framework serialises the call to
+JSON and writes it to the child process's <code>stdin</code>.</li>
+<li>The child reads the JSON, executes the Gmail API call, and writes the result
+to <code>stdout</code>.</li>
+<li>The framework reads <code>stdout</code>, deserialises the result, and feeds it back to
+the LLM as a tool observation.</li>
+</ol>
+<hr>
+<h2 id="2-architecture-diagram">2. Architecture Diagram</h2>
+<pre><code class="language-mermaid"><div class="mermaid">graph TD
+    subgraph "Your Machine — Python Process"
+        direction TB
+        PY["Python script<br/>(triage_crew.py / react_agent.py)"]
+
+        subgraph "CrewAI path"
+            direction TB
+            CREW["Crew(agents, tasks)"]
+            A1["EmailTriageAgent<br/>mcps=[gmail_mcp]"]
+            A2["EmailResponderAgent<br/>mcps=[gmail_mcp]"]
+            CREW --> A1
+            CREW --> A2
+        end
+
+        subgraph "ReAct path"
+            direction TB
+            REACT["ReAct Agent Loop<br/>(LangChain / bare LLM)"]
+            TOOLS["gmail_tools list<br/>[search_emails, read_email, …]"]
+            REACT --> TOOLS
+        end
+
+        STDIO["MCPServerStdio<br/>or MCPServerAdapter<br/>(stdio transport)"]
+
+        PY --> CREW
+        PY --> REACT
+        A1 & A2 --> STDIO
+        TOOLS --> STDIO
+    end
+
+    subgraph "Child Process — Node.js"
+        NODE["dist/index.js<br/>Gmail MCP Server"]
+        AUTH["getAuthenticatedClient()<br/>OAuth2 token refresh"]
+        NODE --> AUTH
+    end
+
+    subgraph "Google Cloud"
+        GAPI["Gmail REST API<br/>(googleapis)"]
+        GAUTH["OAuth2 Token Endpoint<br/>accounts.google.com"]
+    end
+
+    STDIO -- "stdin/stdout (JSON-RPC / MCP)" --> NODE
+    AUTH --> GAUTH
+    AUTH --> GAPI
+
+    style STDIO fill:#f0f4ff,stroke:#4a6fa5
+    style NODE fill:#fef9e7,stroke:#d4ac0d
+    style GAPI fill:#eafaf1,stroke:#27ae60
+</div></code></pre>
+<hr>
+<h2 id="3-sequence-diagram--how-a-tool-call-flows">3. Sequence Diagram — How a Tool Call Flows</h2>
+<p>This diagram shows one full round-trip from <code>crew.kickoff()</code> (or the ReAct
+loop) through the MCP server to the Gmail API and back.</p>
+<pre><code class="language-mermaid"><div class="mermaid">sequenceDiagram
+    autonumber
+    participant User as User / Script
+    participant FW as Framework<br/>(CrewAI or ReAct)
+    participant LLM as LLM<br/>(GPT-4o / Claude / …)
+    participant STDIO as MCPServerStdio<br/>or MCPServerAdapter
+    participant MCP as Gmail MCP Server<br/>(dist/index.js)
+    participant GAPI as Gmail API<br/>(googleapis)
+
+    User->>FW: crew.kickoff() / agent.run(task)
+
+    Note over STDIO,MCP: Spawn child process (once per session)
+    FW->>STDIO: spawn "node dist/index.js"
+    STDIO->>MCP: stdin: {"method":"initialize", …}
+    MCP-->>STDIO: stdout: {"result":{"capabilities":{…}}}
+    STDIO->>MCP: stdin: {"method":"tools/list"}
+    MCP-->>STDIO: stdout: 12 tool schemas
+    STDIO-->>FW: tools registered (search_emails, read_email, …)
+
+    Note over FW,LLM: Agent reasoning loop begins
+    FW->>LLM: system prompt + task description + tool schemas
+    LLM-->>FW: "I should call search_emails(query='is:unread newer_than:1d')"
+
+    FW->>STDIO: call search_emails({"query":"is:unread newer_than:1d","maxResults":20})
+    STDIO->>MCP: stdin: {"method":"tools/call","params":{"name":"search_emails","arguments":{…}}}
+    MCP->>GAPI: users.messages.list(userId='me', q='is:unread newer_than:1d')
+    GAPI-->>MCP: [{id, threadId}, …]
+    MCP-->>STDIO: stdout: {"result":{"content":[{"type":"text","text":"Found 7 emails …"}]}}
+    STDIO-->>FW: tool result text
+
+    FW->>LLM: tool result appended to context
+    LLM-->>FW: "Now call read_email(messageId='18f3a…')"
+
+    FW->>STDIO: call read_email({"messageId":"18f3a…"})
+    STDIO->>MCP: stdin: {"method":"tools/call","params":{"name":"read_email","arguments":{…}}}
+    MCP->>GAPI: users.messages.get(id='18f3a…', format='full')
+    GAPI-->>MCP: full message object
+    MCP-->>STDIO: stdout: {"result":{"content":[{"type":"text","text":"From: … Subject: … Body: …"}]}}
+    STDIO-->>FW: email content
+
+    FW->>LLM: all emails read — produce triage table
+    LLM-->>FW: Markdown triage report (final answer)
+    FW-->>User: result
+
+    Note over STDIO,MCP: Child process kept alive for next task
+</div></code></pre>
+<hr>
+<h2 id="5-technical-specification--mcp-connection">5. Technical Specification — MCP Connection</h2>
+<p>This section documents the exact wire protocol, message format, and process
+lifecycle for connecting any Python agent framework to the Gmail MCP server.</p>
+<h3 id="41-transport-layer">4.1 Transport layer</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Transport</strong></td>
+<td>stdio (standard input / output)</td>
+</tr>
+<tr>
+<td><strong>Wire format</strong></td>
+<td>JSON-RPC 2.0 framed by Content-Length headers (same as LSP)</td>
+</tr>
+<tr>
+<td><strong>Direction</strong></td>
+<td>Client writes to child's <code>stdin</code>; reads from child's <code>stdout</code></td>
+</tr>
+<tr>
+<td><strong>Encoding</strong></td>
+<td>UTF-8, newline-terminated frames</td>
+</tr>
+<tr>
+<td><strong>Concurrency</strong></td>
+<td>Single-threaded request/response; no multiplexing</td>
+</tr>
+</tbody>
+</table>
+<p>Each message is sent as:</p>
+<pre class="hljs"><code><div>Content-Length: &lt;byte-length&gt;\r\n
+\r\n
+{&quot;jsonrpc&quot;:&quot;2.0&quot;, ...}
+</div></code></pre>
+<p>The MCP Python library (<code>mcp&gt;=1.0</code>) and both <code>MCPServerStdio</code> / <code>MCPServerAdapter</code>
+handle framing automatically — you never write raw bytes.</p>
+<h3 id="42-initialization-handshake">4.2 Initialization handshake</h3>
+<p>When the child process starts, the client must send an <code>initialize</code> request
+before any other call. The server replies with its capabilities and the agreed
+protocol version.</p>
+<pre class="hljs"><code><div>// Client → Server  (stdin)
+{
+  &quot;jsonrpc&quot;: &quot;2.0&quot;,
+  &quot;id&quot;: 1,
+  &quot;method&quot;: &quot;initialize&quot;,
+  &quot;params&quot;: {
+    &quot;protocolVersion&quot;: &quot;2024-11-05&quot;,
+    &quot;capabilities&quot;: {},
+    &quot;clientInfo&quot;: { &quot;name&quot;: &quot;crewai-mcp-client&quot;, &quot;version&quot;: &quot;1.0&quot; }
+  }
+}
+
+// Server → Client  (stdout)
+{
+  &quot;jsonrpc&quot;: &quot;2.0&quot;,
+  &quot;id&quot;: 1,
+  &quot;result&quot;: {
+    &quot;protocolVersion&quot;: &quot;2024-11-05&quot;,
+    &quot;capabilities&quot;: { &quot;tools&quot;: {} },
+    &quot;serverInfo&quot;: { &quot;name&quot;: &quot;Gmail MCP Server&quot;, &quot;version&quot;: &quot;1.0.0&quot; }
+  }
+}
+</div></code></pre>
+<p>The client must then send an <code>initialized</code> notification (no <code>id</code>) to signal
+it is ready:</p>
+<pre class="hljs"><code><div>{ &quot;jsonrpc&quot;: &quot;2.0&quot;, &quot;method&quot;: &quot;notifications/initialized&quot; }
+</div></code></pre>
+<h3 id="43-tool-discovery">4.3 Tool discovery</h3>
+<p>After initialization, the client requests the full tool schema list:</p>
+<pre class="hljs"><code><div>// Client → Server
+{ &quot;jsonrpc&quot;: &quot;2.0&quot;, &quot;id&quot;: 2, &quot;method&quot;: &quot;tools/list&quot;, &quot;params&quot;: {} }
+
+// Server → Client  (abbreviated — 12 tools total)
+{
+  &quot;jsonrpc&quot;: &quot;2.0&quot;,
+  &quot;id&quot;: 2,
+  &quot;result&quot;: {
+    &quot;tools&quot;: [
+      {
+        &quot;name&quot;: &quot;search_emails&quot;,
+        &quot;description&quot;: &quot;Search emails using Gmail query syntax&quot;,
+        &quot;inputSchema&quot;: {
+          &quot;type&quot;: &quot;object&quot;,
+          &quot;properties&quot;: {
+            &quot;query&quot;:      { &quot;type&quot;: &quot;string&quot;,  &quot;description&quot;: &quot;Gmail search query&quot; },
+            &quot;maxResults&quot;: { &quot;type&quot;: &quot;number&quot;,  &quot;description&quot;: &quot;Max results (default 10, max 50)&quot; }
+          },
+          &quot;required&quot;: [&quot;query&quot;]
+        }
+      },
+      {
+        &quot;name&quot;: &quot;read_email&quot;,
+        &quot;description&quot;: &quot;Get the full content of a specific email&quot;,
+        &quot;inputSchema&quot;: {
+          &quot;type&quot;: &quot;object&quot;,
+          &quot;properties&quot;: {
+            &quot;messageId&quot;: { &quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;Gmail message ID&quot; }
+          },
+          &quot;required&quot;: [&quot;messageId&quot;]
+        }
+      }
+      // … 10 more tools (send_email, create_draft, reply_to_email,
+      //    delete_email, mark_as_read, mark_as_unread, set_labels,
+      //    list_emails, get_labels, get_profile)
+    ]
+  }
+}
+</div></code></pre>
+<p>The framework converts each JSON Schema entry into a typed tool object that the
+LLM sees in its system prompt.</p>
+<h3 id="44-tool-invocation">4.4 Tool invocation</h3>
+<p>When the LLM picks a tool, the framework sends a <code>tools/call</code> request:</p>
+<pre class="hljs"><code><div>// Client → Server
+{
+  &quot;jsonrpc&quot;: &quot;2.0&quot;,
+  &quot;id&quot;: 7,
+  &quot;method&quot;: &quot;tools/call&quot;,
+  &quot;params&quot;: {
+    &quot;name&quot;: &quot;search_emails&quot;,
+    &quot;arguments&quot;: {
+      &quot;query&quot;: &quot;is:unread newer_than:1d&quot;,
+      &quot;maxResults&quot;: 20
+    }
+  }
+}
+</div></code></pre>
+<h3 id="45-response-format">4.5 Response format</h3>
+<p>Every tool result is wrapped in a <code>content</code> array.  Each element has a <code>type</code>
+(<code>&quot;text&quot;</code> for most Gmail tools) and the actual payload in <code>text</code>:</p>
+<pre class="hljs"><code><div>// Server → Client
+{
+  &quot;jsonrpc&quot;: &quot;2.0&quot;,
+  &quot;id&quot;: 7,
+  &quot;result&quot;: {
+    &quot;content&quot;: [
+      {
+        &quot;type&quot;: &quot;text&quot;,
+        &quot;text&quot;: &quot;Found 7 emails:\n1. From: alice@example.com | Subject: Q2 review | ID: 18f3a4b…\n…&quot;
+      }
+    ],
+    &quot;isError&quot;: false
+  }
+}
+</div></code></pre>
+<p>If <code>isError</code> is <code>true</code>, the <code>text</code> field contains the error message instead of
+the result. The framework propagates this back to the LLM as an observation.</p>
+<h3 id="46-error-handling">4.6 Error handling</h3>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Server behaviour</th>
+<th>Client/framework behaviour</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Missing required argument</td>
+<td><code>isError: true</code> with descriptive message</td>
+<td>LLM retries with correct args</td>
+</tr>
+<tr>
+<td>OAuth token expired</td>
+<td>Server refreshes automatically via <code>getAuthenticatedClient()</code></td>
+<td>Transparent to the client</td>
+</tr>
+<tr>
+<td>Gmail API 429 (rate limit)</td>
+<td><code>isError: true</code>, message: &quot;Rate limit exceeded&quot;</td>
+<td>LLM should back off and retry</td>
+</tr>
+<tr>
+<td>Gmail API 5xx</td>
+<td><code>isError: true</code>, HTTP status in message</td>
+<td>Surface to user</td>
+</tr>
+<tr>
+<td>Child process crash</td>
+<td><code>stdout</code> closes unexpectedly</td>
+<td>MCPServerAdapter raises <code>RuntimeError</code>; MCPServerStdio re-raises in the agent loop</td>
+</tr>
+<tr>
+<td>Invalid JSON frame</td>
+<td>Server closes connection</td>
+<td>Framework raises connection error</td>
+</tr>
+</tbody>
+</table>
+<h3 id="47-process-lifecycle">4.7 Process lifecycle</h3>
+<pre class="hljs"><code><div>Python starts              Child started           Child stopped
+     │                          │                       │
+     ▼                          ▼                       ▼
+ [spawn node]─────────────►[initialize]──── … ────►[process.exit()]
+                                │                       ▲
+                           [tools/list]                 │
+                                │               Context manager __exit__
+                           [tools/call ×N]      or Crew teardown
+</div></code></pre>
+<ul>
+<li><strong><code>MCPServerStdio</code></strong> (CrewAI DSL): process starts on first agent tool call;
+stays alive until the <code>Crew</code> object is garbage-collected.</li>
+<li><strong><code>MCPServerAdapter</code></strong> (context manager): process starts on <code>__enter__</code>,
+stops on <code>__exit__</code> — use the <code>with</code> block to bound the lifetime.</li>
+<li>Both send a SIGTERM (or <code>ChildProcess.kill()</code> on Windows) to the Node process
+on shutdown — the server flushes any pending replies before exiting.</li>
+</ul>
+<h3 id="48-required-environment-variables">4.8 Required environment variables</h3>
+<p>The Node child process reads credentials from its own environment.  You must
+forward them explicitly — they are <strong>not</strong> inherited automatically by
+<code>MCPServerStdio</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GMAIL_CLIENT_ID</code></td>
+<td>Yes</td>
+<td>Google OAuth 2.0 Client ID</td>
+</tr>
+<tr>
+<td><code>GMAIL_CLIENT_SECRET</code></td>
+<td>Yes</td>
+<td>Google OAuth 2.0 Client Secret</td>
+</tr>
+<tr>
+<td><code>GMAIL_REFRESH_TOKEN</code></td>
+<td>Yes*</td>
+<td>Refresh token from the setup wizard</td>
+</tr>
+<tr>
+<td><code>CREDENTIALS_PATH</code></td>
+<td>No</td>
+<td>Path to <code>token.json</code> (default: <code>credentials/token.json</code>)</td>
+</tr>
+</tbody>
+</table>
+<p>* If absent, the server falls back to reading <code>credentials/token.json</code>.</p>
+<p><strong>Python snippet — forwarding credentials safely:</strong></p>
+<pre class="hljs"><code><div><span class="hljs-keyword">import</span> os
+<span class="hljs-keyword">from</span> crewai.mcp <span class="hljs-keyword">import</span> MCPServerStdio
+
+<span class="hljs-comment"># Read from the current process environment — never hardcode values</span>
+gmail_mcp = MCPServerStdio(
+    command=<span class="hljs-string">"node"</span>,
+    args=[<span class="hljs-string">"dist/index.js"</span>],
+    env={
+        <span class="hljs-comment"># Required: OAuth credentials</span>
+        <span class="hljs-string">"GMAIL_CLIENT_ID"</span>:     os.environ[<span class="hljs-string">"GMAIL_CLIENT_ID"</span>],
+        <span class="hljs-string">"GMAIL_CLIENT_SECRET"</span>: os.environ[<span class="hljs-string">"GMAIL_CLIENT_SECRET"</span>],
+        <span class="hljs-string">"GMAIL_REFRESH_TOKEN"</span>: os.environ[<span class="hljs-string">"GMAIL_REFRESH_TOKEN"</span>],
+        <span class="hljs-comment"># Recommended: preserve PATH so Node can resolve its own modules</span>
+        <span class="hljs-string">"PATH"</span>:                os.environ.get(<span class="hljs-string">"PATH"</span>, <span class="hljs-string">""</span>),
+        <span class="hljs-comment"># Optional: silence Node.js deprecation warnings</span>
+        <span class="hljs-string">"NODE_NO_WARNINGS"</span>:    <span class="hljs-string">"1"</span>,
+    },
+    cache_tools_list=<span class="hljs-literal">True</span>,
+)
+</div></code></pre>
+<blockquote>
+<p><strong>Security note</strong>: never pass <code>**os.environ</code> wholesale to the child process;
+it would forward all secrets (API keys, tokens, etc.) present in the parent.
+Pass only the variables the server actually needs.</p>
+</blockquote>
+<hr>
+<h2 id="5-crewai--multi-agent-orchestration">5. CrewAI — Multi-Agent Orchestration</h2>
+<h3 id="what-it-is">What it is</h3>
+<p>CrewAI models your workflow as a <strong>crew</strong> of specialised agents that each own
+a role, a goal, and a backstory. Tasks are handed between agents in a defined
+<code>Process</code> (sequential, parallel, or hierarchical). Each agent gets the full
+MCP tool list but focuses on its narrow responsibility.</p>
+<h3 id="how-the-mcp-connection-is-configured">How the MCP connection is configured</h3>
+<pre class="hljs"><code><div><span class="hljs-keyword">from</span> crewai.mcp <span class="hljs-keyword">import</span> MCPServerStdio
+
+gmail_mcp = MCPServerStdio(
+    command=<span class="hljs-string">"node"</span>,
+    args=[<span class="hljs-string">"dist/index.js"</span>],
+    env={
+        <span class="hljs-string">"GMAIL_CLIENT_ID"</span>:     os.environ[<span class="hljs-string">"GMAIL_CLIENT_ID"</span>],
+        <span class="hljs-string">"GMAIL_CLIENT_SECRET"</span>: os.environ[<span class="hljs-string">"GMAIL_CLIENT_SECRET"</span>],
+        <span class="hljs-string">"GMAIL_REFRESH_TOKEN"</span>: os.environ[<span class="hljs-string">"GMAIL_REFRESH_TOKEN"</span>],
+    },
+    cache_tools_list=<span class="hljs-literal">True</span>,   <span class="hljs-comment"># list tools once; reuse schema for every agent</span>
+)
+
+agent = Agent(
+    role=<span class="hljs-string">"Email Triage Specialist"</span>,
+    goal=<span class="hljs-string">"Categorise every unread email by priority."</span>,
+    backstory=<span class="hljs-string">"..."</span>,
+    mcps=[gmail_mcp],        <span class="hljs-comment"># ← MCP server attached here</span>
+)
+</div></code></pre>
+<ul>
+<li><code>MCPServerStdio</code> spawns <code>node dist/index.js</code> as a child process when the
+agent first needs a tool.</li>
+<li><code>cache_tools_list=True</code> avoids a <code>tools/list</code> call on every task, improving
+performance when multiple agents share the same server.</li>
+<li>The server is kept alive for the life of the <code>Crew</code> and torn down when it
+exits.</li>
+</ul>
+<h3 id="key-characteristics">Key characteristics</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Agents</strong></td>
+<td>Multiple, each with a distinct <em>role / goal / backstory</em></td>
+</tr>
+<tr>
+<td><strong>Task flow</strong></td>
+<td>Sequential (or parallel / hierarchical via <code>Process</code>)</td>
+</tr>
+<tr>
+<td><strong>Context passing</strong></td>
+<td><code>context=[prior_task]</code> lets downstream agents see upstream output</td>
+</tr>
+<tr>
+<td><strong>Tool sharing</strong></td>
+<td>All agents can see all 12 Gmail tools</td>
+</tr>
+<tr>
+<td><strong>Best for</strong></td>
+<td>Pipelines with distinct phases (triage → draft → review → send)</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="6-react--single-agent-loop">6. ReAct — Single Agent Loop</h2>
+<h3 id="what-it-is">What it is</h3>
+<p><strong>ReAct</strong> (<em>Reasoning + Acting</em>) is a prompting pattern where a single LLM
+iterates in a <code>Thought → Action → Observation</code> loop until it reaches a final
+answer.  There is no crew, no role assignment, and no structured task handoff —
+the LLM decides <em>everything</em> in one context window.</p>
+<p>You can run a ReAct agent using:</p>
+<ul>
+<li><strong>LangChain</strong> <code>create_react_agent</code> / <code>AgentExecutor</code></li>
+<li><strong>LlamaIndex</strong> <code>ReActAgent</code></li>
+<li><strong>Bare MCP</strong> with a custom loop</li>
+<li><strong>Smolagents</strong> <code>ToolCallingAgent</code></li>
+</ul>
+<p>The example below uses <code>MCPServerAdapter</code> (which works with any Python
+framework) to get the 12 Gmail tools as a plain Python list, then hands them
+to LangChain's ReAct executor.</p>
+<h3 id="how-the-mcp-connection-is-configured">How the MCP connection is configured</h3>
+<pre class="hljs"><code><div><span class="hljs-keyword">from</span> crewai_tools <span class="hljs-keyword">import</span> MCPServerAdapter   <span class="hljs-comment"># also works standalone, no CrewAI needed</span>
+<span class="hljs-keyword">from</span> mcp <span class="hljs-keyword">import</span> StdioServerParameters
+
+server_params = StdioServerParameters(
+    command=<span class="hljs-string">"node"</span>,
+    args=[<span class="hljs-string">"dist/index.js"</span>],
+    env={
+        <span class="hljs-string">"GMAIL_CLIENT_ID"</span>:     os.environ[<span class="hljs-string">"GMAIL_CLIENT_ID"</span>],
+        <span class="hljs-string">"GMAIL_CLIENT_SECRET"</span>: os.environ[<span class="hljs-string">"GMAIL_CLIENT_SECRET"</span>],
+        <span class="hljs-string">"GMAIL_REFRESH_TOKEN"</span>: os.environ[<span class="hljs-string">"GMAIL_REFRESH_TOKEN"</span>],
+        **os.environ,   <span class="hljs-comment"># preserve PATH so subprocess can find node</span>
+    },
+)
+
+<span class="hljs-keyword">with</span> MCPServerAdapter(server_params, connect_timeout=<span class="hljs-number">60</span>) <span class="hljs-keyword">as</span> gmail_tools:
+    <span class="hljs-comment"># gmail_tools is a plain list of BaseTool-compatible objects</span>
+    agent = create_react_agent(llm, gmail_tools, prompt)
+    executor = AgentExecutor(agent=agent, tools=gmail_tools, verbose=<span class="hljs-literal">True</span>)
+    result = executor.invoke({<span class="hljs-string">"input"</span>: task_description})
+</div></code></pre>
+<ul>
+<li>The child process is alive only inside the <code>with</code> block.</li>
+<li><code>gmail_tools</code> is a standard Python list — compatible with LangChain, but also
+passable to any framework that accepts <code>BaseTool</code>.</li>
+</ul>
+<h3 id="key-characteristics">Key characteristics</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Agents</strong></td>
+<td>One — the LLM drives everything</td>
+</tr>
+<tr>
+<td><strong>Task flow</strong></td>
+<td>Free-form <code>Thought → Action → Observation</code> loop</td>
+</tr>
+<tr>
+<td><strong>Context</strong></td>
+<td>Everything is in one growing context window</td>
+</tr>
+<tr>
+<td><strong>Tool sharing</strong></td>
+<td>N/A — the single agent owns all tools</td>
+</tr>
+<tr>
+<td><strong>Best for</strong></td>
+<td>Ad-hoc tasks, exploration, simple one-shot goals</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="7-side-by-side-code-comparison">7. Side-by-Side Code Comparison</h2>
+<pre class="hljs"><code><div><span class="hljs-comment"># ── CREWAI (multi-agent) ─────────────────────────────────────────────────────</span>
+<span class="hljs-keyword">from</span> crewai <span class="hljs-keyword">import</span> Agent, Crew, Process, Task
+<span class="hljs-keyword">from</span> crewai.mcp <span class="hljs-keyword">import</span> MCPServerStdio
+
+gmail_mcp = MCPServerStdio(command=<span class="hljs-string">"node"</span>, args=[<span class="hljs-string">"dist/index.js"</span>], env=CREDS)
+
+triage_agent = Agent(
+    role=<span class="hljs-string">"Email Triage Specialist"</span>,
+    goal=<span class="hljs-string">"Categorise every unread email."</span>,
+    backstory=<span class="hljs-string">"Meticulous executive assistant."</span>,
+    mcps=[gmail_mcp],
+)
+
+responder_agent = Agent(
+    role=<span class="hljs-string">"Professional Email Writer"</span>,
+    goal=<span class="hljs-string">"Draft replies for Action Required emails."</span>,
+    backstory=<span class="hljs-string">"Writes clear, polite business emails."</span>,
+    mcps=[gmail_mcp],
+)
+
+triage_task = Task(
+    description=<span class="hljs-string">"Search, read, and categorise unread emails from the last 24h."</span>,
+    expected_output=<span class="hljs-string">"Markdown triage table."</span>,
+    agent=triage_agent,
+)
+reply_task = Task(
+    description=<span class="hljs-string">"For each Action Required email, call create_draft."</span>,
+    expected_output=<span class="hljs-string">"List of draft confirmations."</span>,
+    agent=responder_agent,
+    context=[triage_task],       <span class="hljs-comment"># ← receives triage output</span>
+)
+
+crew = Crew(
+    agents=[triage_agent, responder_agent],
+    tasks=[triage_task, reply_task],
+    process=Process.sequential,
+)
+result = crew.kickoff()
+</div></code></pre>
+<pre class="hljs"><code><div><span class="hljs-comment"># ── REACT (single agent, LangChain) ──────────────────────────────────────────</span>
+<span class="hljs-keyword">from</span> crewai_tools <span class="hljs-keyword">import</span> MCPServerAdapter
+<span class="hljs-keyword">from</span> mcp <span class="hljs-keyword">import</span> StdioServerParameters
+<span class="hljs-keyword">from</span> langchain.agents <span class="hljs-keyword">import</span> AgentExecutor, create_react_agent
+<span class="hljs-keyword">from</span> langchain_openai <span class="hljs-keyword">import</span> ChatOpenAI
+
+server_params = StdioServerParameters(
+    command=<span class="hljs-string">"node"</span>, args=[<span class="hljs-string">"dist/index.js"</span>], env={**CREDS, **os.environ}
+)
+
+<span class="hljs-keyword">with</span> MCPServerAdapter(server_params, connect_timeout=<span class="hljs-number">60</span>) <span class="hljs-keyword">as</span> gmail_tools:
+    llm = ChatOpenAI(model=<span class="hljs-string">"gpt-4o"</span>)
+    prompt = hub.pull(<span class="hljs-string">"hwchase17/react"</span>)   <span class="hljs-comment"># standard ReAct prompt template</span>
+
+    agent = create_react_agent(llm, gmail_tools, prompt)
+    executor = AgentExecutor(agent=agent, tools=gmail_tools, verbose=<span class="hljs-literal">True</span>)
+
+    result = executor.invoke({
+        <span class="hljs-string">"input"</span>: (
+            <span class="hljs-string">"Search for unread emails from the last 24 hours, "</span>
+            <span class="hljs-string">"categorise them by priority, and create a draft reply "</span>
+            <span class="hljs-string">"for anything that needs a response today."</span>
+        )
+    })
+
+print(result[<span class="hljs-string">"output"</span>])
+</div></code></pre>
+<hr>
+<h2 id="8-decision-guide">8. Decision Guide</h2>
+<pre><code class="language-mermaid"><div class="mermaid">flowchart TD
+    START([I want to process Gmail with an AI agent]) --> Q1{Is your workflow<br/>multi-phase?<br/>e.g. triage → draft → review}
+
+    Q1 -- Yes --> Q2{Do different phases<br/>require different<br/>personas / expertise?}
+    Q2 -- Yes --> CREWAI[Use CrewAI<br/>Multi-Agent Crew]
+    Q2 -- No --> Q3{Do you need strict<br/>task ordering and<br/>context passing?}
+    Q3 -- Yes --> CREWAI
+    Q3 -- No --> REACT[Use ReAct<br/>Single Agent]
+
+    Q1 -- No --> Q4{Is the task<br/>open-ended or<br/>exploratory?}
+    Q4 -- Yes --> REACT
+    Q4 -- No --> Q5{Do you have<br/>an existing LangChain<br/>or LlamaIndex stack?}
+    Q5 -- Yes --> REACT
+    Q5 -- No --> CREWAI
+
+    CREWAI --> NOTE_C["✓ Structured pipeline<br/>✓ Role specialisation<br/>✓ Easier to test per-agent<br/>✗ More boilerplate<br/>✗ Requires crewai >= 0.100"]
+    REACT --> NOTE_R["✓ Minimal code<br/>✓ Flexible, ad-hoc<br/>✓ Works with any framework<br/>✗ Prone to context-window bloat<br/>✗ No built-in role structure"]
+
+    style CREWAI fill:#e8f5e9,stroke:#388e3c
+    style REACT fill:#e3f2fd,stroke:#1976d2
+</div></code></pre>
+<h3 id="quick-reference-table">Quick-reference table</h3>
+<table>
+<thead>
+<tr>
+<th>Criteria</th>
+<th>CrewAI</th>
+<th>ReAct (single agent)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Number of agents</strong></td>
+<td>Multiple (1 per role)</td>
+<td>One</td>
+</tr>
+<tr>
+<td><strong>Task structure</strong></td>
+<td>Declarative <code>Task</code> objects</td>
+<td>Implicit (inside the LLM's reasoning)</td>
+</tr>
+<tr>
+<td><strong>Context passing</strong></td>
+<td><code>context=[task]</code> — explicit</td>
+<td>Accumulates in the context window</td>
+</tr>
+<tr>
+<td><strong>Context window growth</strong></td>
+<td>Bounded per agent</td>
+<td>Unbounded — can hit limits on long tasks</td>
+</tr>
+<tr>
+<td><strong>Role specialisation</strong></td>
+<td>First-class (<code>role</code>, <code>goal</code>, <code>backstory</code>)</td>
+<td>Prompt-engineered system message only</td>
+</tr>
+<tr>
+<td><strong>MCP integration</strong></td>
+<td><code>mcps=[server]</code> DSL or <code>MCPServerAdapter</code></td>
+<td><code>MCPServerAdapter</code> → <code>tools=</code> list</td>
+</tr>
+<tr>
+<td><strong>Parallel tasks</strong></td>
+<td><code>Process.parallel</code> built-in</td>
+<td>Manual (asyncio / threading)</td>
+</tr>
+<tr>
+<td><strong>Debugging</strong></td>
+<td>Per-agent verbose logs, task outputs</td>
+<td>Single verbose trace</td>
+</tr>
+<tr>
+<td><strong>Framework lock-in</strong></td>
+<td>CrewAI</td>
+<td>Any framework that accepts <code>BaseTool</code></td>
+</tr>
+<tr>
+<td><strong>Code amount</strong></td>
+<td>~50–80 lines of structured setup</td>
+<td>~20–30 lines</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="9-running-both-examples">9. Running Both Examples</h2>
+<h3 id="prerequisites">Prerequisites</h3>
+<pre class="hljs"><code><div><span class="hljs-comment"># Build the Gmail MCP server (do this once)</span>
+npm install
+npm run build
+
+<span class="hljs-comment"># Install Python dependencies</span>
+pip install <span class="hljs-string">"crewai&gt;=0.100"</span> <span class="hljs-string">"crewai-tools[mcp]&gt;=0.14"</span> mcp langchain langchain-openai
+</div></code></pre>
+<h3 id="environment-variables">Environment variables</h3>
+<pre class="hljs"><code><div><span class="hljs-built_in">export</span> GMAIL_CLIENT_ID=<span class="hljs-string">"your-client-id"</span>
+<span class="hljs-built_in">export</span> GMAIL_CLIENT_SECRET=<span class="hljs-string">"your-client-secret"</span>
+<span class="hljs-built_in">export</span> GMAIL_REFRESH_TOKEN=<span class="hljs-string">"your-refresh-token"</span>
+<span class="hljs-built_in">export</span> OPENAI_API_KEY=<span class="hljs-string">"your-openai-key"</span>
+</div></code></pre>
+<h3 id="run-the-crewai-example">Run the CrewAI example</h3>
+<pre class="hljs"><code><div>python examples/crewai_email_triage/triage_crew.py
+</div></code></pre>
+<h3 id="run-a-react-agent-inline-example">Run a ReAct agent (inline example)</h3>
+<pre class="hljs"><code><div><span class="hljs-comment"># react_email_agent.py</span>
+<span class="hljs-keyword">import</span> os
+<span class="hljs-keyword">from</span> pathlib <span class="hljs-keyword">import</span> Path
+<span class="hljs-keyword">from</span> crewai_tools <span class="hljs-keyword">import</span> MCPServerAdapter
+<span class="hljs-keyword">from</span> mcp <span class="hljs-keyword">import</span> StdioServerParameters
+<span class="hljs-keyword">from</span> langchain <span class="hljs-keyword">import</span> hub
+<span class="hljs-keyword">from</span> langchain.agents <span class="hljs-keyword">import</span> AgentExecutor, create_react_agent
+<span class="hljs-keyword">from</span> langchain_openai <span class="hljs-keyword">import</span> ChatOpenAI
+
+REPO_ROOT = Path(__file__).resolve().parent
+MCP_PATH   = REPO_ROOT / <span class="hljs-string">"dist"</span> / <span class="hljs-string">"index.js"</span>
+
+CREDS = {
+    <span class="hljs-string">"GMAIL_CLIENT_ID"</span>:     os.environ[<span class="hljs-string">"GMAIL_CLIENT_ID"</span>],
+    <span class="hljs-string">"GMAIL_CLIENT_SECRET"</span>: os.environ[<span class="hljs-string">"GMAIL_CLIENT_SECRET"</span>],
+    <span class="hljs-string">"GMAIL_REFRESH_TOKEN"</span>: os.environ[<span class="hljs-string">"GMAIL_REFRESH_TOKEN"</span>],
+}
+
+server_params = StdioServerParameters(
+    command=<span class="hljs-string">"node"</span>,
+    args=[str(MCP_PATH)],
+    env={**CREDS, **os.environ},
+)
+
+TASK = (
+    <span class="hljs-string">"Search for unread emails from the last 24 hours (is:unread newer_than:1d). "</span>
+    <span class="hljs-string">"Read the top 5, categorise each as Urgent / Action Required / FYI / Newsletter, "</span>
+    <span class="hljs-string">"and for any Action Required email create a draft reply. "</span>
+    <span class="hljs-string">"Return a Markdown summary. Do NOT call send_email."</span>
+)
+
+<span class="hljs-keyword">with</span> MCPServerAdapter(server_params, connect_timeout=<span class="hljs-number">60</span>) <span class="hljs-keyword">as</span> gmail_tools:
+    llm   = ChatOpenAI(model=<span class="hljs-string">"gpt-4o"</span>, temperature=<span class="hljs-number">0</span>)
+    prompt = hub.pull(<span class="hljs-string">"hwchase17/react"</span>)
+    agent  = create_react_agent(llm, gmail_tools, prompt)
+
+    executor = AgentExecutor(
+        agent=agent,
+        tools=gmail_tools,
+        verbose=<span class="hljs-literal">True</span>,
+        max_iterations=<span class="hljs-number">20</span>,   <span class="hljs-comment"># guard against infinite loops</span>
+        handle_parsing_errors=<span class="hljs-literal">True</span>,
+    )
+
+    result = executor.invoke({<span class="hljs-string">"input"</span>: TASK})
+    print(result[<span class="hljs-string">"output"</span>])
+</div></code></pre>
+<pre class="hljs"><code><div>python react_email_agent.py
+</div></code></pre>
+<hr>
+<h2 id="further-reading">Further Reading</h2>
+<ul>
+<li><a href="USAGE.md">USAGE.md</a> — full Gmail MCP server setup guide and tool reference</li>
+<li><a href="https://docs.crewai.com/en/mcp/overview">CrewAI docs — MCP integration</a></li>
+<li><a href="https://spec.modelcontextprotocol.io">MCP specification</a></li>
+<li><a href="https://python.langchain.com/docs/modules/agents/agent_types/react">LangChain ReAct agent</a></li>
+<li><a href="https://github.com/crewAIInc/crewAI-tools/tree/main/crewai_tools/tools/mcp">MCPServerAdapter source</a></li>
+</ul>
+
+</body>
+</html>
