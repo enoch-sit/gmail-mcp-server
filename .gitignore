@@ -7,9 +7,19 @@ dist/
 # Runtime credentials — NEVER commit these
 credentials/
 !credentials/.gitkeep
+credentials/**/*.json
+credentials/**/*.token
 
-# Environment variables
+# Environment variables — NEVER commit these
 .env
+.env.local
+.env.*.local
+
+# OAuth tokens and sensitive files
+credentials/token.json
+credentials/credentials.json
+*.token
+*.credentials
 
 # Logs
 *.log

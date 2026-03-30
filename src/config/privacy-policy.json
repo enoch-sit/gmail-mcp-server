@@ -1,0 +1,8 @@
+{
+  "version": "1.0.0",
+  "orchestratorUrl": "http://privacy-orchestrator:8100/redact",
+  "timeoutMs": 12000,
+  "failClosed": true,
+  "enableLocalFallback": true,
+  "redactReplacement": "█"
+}

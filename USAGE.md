@@ -169,7 +169,7 @@ After restarting your MCP client, open a new conversation and ask:
 > "Use the Gmail tool to tell me my email address and how many messages I have."
 
 The client will invoke `get_profile` and display the result. If it works,
-all 12 tools are ready.
+all 17 tools are ready.
 
 ---
 
@@ -182,6 +182,21 @@ all 12 tools are ready.
 | `list_emails` | List emails from inbox (or any label) | `labelIds` (default `["INBOX"]`), `query`, `maxResults` (default 10, max 50) |
 | `read_email` | Fetch the full content of one email | `messageId` (required) |
 | `search_emails` | Search using Gmail query syntax | `query` (required), `maxResults` |
+
+### Attachment safety
+
+| Tool | What it does | Key parameters |
+|---|---|---|
+| `list_attachments_with_safety` | Lists attachments for a message and reports policy allow/block status | `messageId` (required) |
+| `validate_attachment` | Validates one attachment by size, MIME type, extension, and filename policy | `messageId`, `attachmentId` (required) |
+| `download_attachment_safe` | Downloads attachment only after passing validation and magic-byte checks | `messageId`, `attachmentId` (required) |
+
+### Privacy redaction (local)
+
+| Tool | What it does | Key parameters |
+|---|---|---|
+| `redact_text_local` | Redacts sensitive content using local privacy pipeline with deterministic fallback | `text` (required), `contentType` |
+| `read_email_with_privacy` | Reads one message and returns only redacted subject/snippet/body | `messageId` (required) |
 
 ### Composing emails
 

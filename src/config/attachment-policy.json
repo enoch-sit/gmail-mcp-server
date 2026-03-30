@@ -1,0 +1,25 @@
+{
+  "version": "1.0.0",
+  "maxSizeMB": 25,
+  "maxFilenameLength": 180,
+  "allowedMimeTypes": [
+    "application/pdf",
+    "image/jpeg",
+    "image/png",
+    "image/gif",
+    "text/plain"
+  ],
+  "blockedExtensions": [
+    ".exe",
+    ".dll",
+    ".bat",
+    ".cmd",
+    ".ps1",
+    ".sh",
+    ".js",
+    ".vbs",
+    ".msi",
+    ".jar"
+  ],
+  "downloadTimeoutMs": 15000
+}

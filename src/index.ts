@@ -12,6 +12,11 @@ import { emailToolDefinitions, handleEmailTool } from './tools/emails.js';
 import { composeToolDefinitions, handleComposeTool } from './tools/compose.js';
 import { manageToolDefinitions, handleManageTool } from './tools/manage.js';
 import { metaToolDefinitions, handleMetaTool } from './tools/meta.js';
+import {
+  attachmentToolDefinitions,
+  handleAttachmentTool,
+} from './tools/attachments.js';
+import { privacyToolDefinitions, handlePrivacyTool } from './tools/privacy.js';
 
 const server = new Server(
   { name: 'gmail-mcp-server', version: '1.0.0' },
@@ -20,6 +25,8 @@ const server = new Server(
 
 const allTools = [
   ...emailToolDefinitions,
+  ...attachmentToolDefinitions,
+  ...privacyToolDefinitions,
   ...composeToolDefinitions,
   ...manageToolDefinitions,
   ...metaToolDefinitions,
@@ -36,6 +43,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
     if (emailToolDefinitions.some((t) => t.name === name)) {
       result = await handleEmailTool(name, toolArgs);
+    } else if (attachmentToolDefinitions.some((t) => t.name === name)) {
+      result = await handleAttachmentTool(name, toolArgs);
+    } else if (privacyToolDefinitions.some((t) => t.name === name)) {
+      result = await handlePrivacyTool(name, toolArgs);
     } else if (composeToolDefinitions.some((t) => t.name === name)) {
       result = await handleComposeTool(name, toolArgs);
     } else if (manageToolDefinitions.some((t) => t.name === name)) {

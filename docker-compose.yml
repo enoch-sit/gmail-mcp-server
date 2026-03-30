@@ -26,6 +26,7 @@ services:
       - GMAIL_CLIENT_SECRET=${GMAIL_CLIENT_SECRET:-}
       - GMAIL_REFRESH_TOKEN=${GMAIL_REFRESH_TOKEN:-}
       - GMAIL_REDIRECT_URI=${GMAIL_REDIRECT_URI:-http://localhost:3000/oauth/callback}
+      - PRIVACY_ORCHESTRATOR_URL=${PRIVACY_ORCHESTRATOR_URL:-http://privacy-orchestrator:8100/redact}
 
     # ── Alternative: mount credentials files ────────────────────────────────
     # Uncomment to persist token.json / credentials.json across container restarts.
@@ -37,3 +38,57 @@ services:
     tty: true
 
     restart: unless-stopped
+
+  # Optional Redis for token management + session state (start with --profile privacy)
+  redis:
+    profiles: ["privacy"]
+    image: redis:7-alpine
+    container_name: gmail-mcp-redis
+    command:
+      - redis-server
+      - --appendonly
+      - "yes"
+      - --appendfsync
+      - "everysec"
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+
+  # Optional local vLLM runtime (start with --profile privacy)
+  vllm:
+    profiles: ["privacy"]
+    image: vllm/vllm-openai:latest
+    container_name: local-vllm
+    command:
+      - --model
+      - ${VLLM_MODEL:-mistralai/Mistral-7B-Instruct-v0.2}
+      - --host
+      - 0.0.0.0
+      - --port
+      - "8000"
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+  # Optional local privacy orchestrator (CrewAI swarm + deterministic fallback)
+  privacy-orchestrator:
+    profiles: ["privacy"]
+    build:
+      context: ./privacy-orchestrator
+      dockerfile: Dockerfile
+    container_name: privacy-orchestrator
+    environment:
+      - PORT=8100
+      - VLLM_BASE_URL=http://vllm:8000/v1
+      - VLLM_MODEL=${VLLM_MODEL:-mistralai/Mistral-7B-Instruct-v0.2}
+      - USE_CREWAI_SWARM=1
+    depends_on:
+      - vllm
+    ports:
+      - "8100:8100"
+    restart: unless-stopped
+
+volumes:
+  redis_data:

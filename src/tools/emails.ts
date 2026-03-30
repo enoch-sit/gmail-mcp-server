@@ -60,6 +60,25 @@ export const emailToolDefinitions = [
       required: ['query'],
     },
   },
+  {
+    name: 'download_attachment',
+    description:
+      'Download a specific attachment from a Gmail message. Returns the base64-encoded attachment data and its MIME type.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        messageId: {
+          type: 'string',
+          description: 'The Gmail message ID containing the attachment',
+        },
+        attachmentId: {
+          type: 'string',
+          description: 'The attachment ID (from the attachments list in read_email)',
+        },
+      },
+      required: ['messageId', 'attachmentId'],
+    },
+  },
 ];
 
 function decodeBase64Url(data: string): string {
@@ -95,6 +114,35 @@ function extractBody(payload: gmail_v1.Schema$MessagePart | undefined): string {
   }
 
   return '';
+}
+
+interface AttachmentInfo {
+  attachmentId: string;
+  filename: string;
+  mimeType: string;
+  size: number;
+}
+
+function extractAttachments(payload: gmail_v1.Schema$MessagePart | undefined): AttachmentInfo[] {
+  if (!payload) return [];
+  const results: AttachmentInfo[] = [];
+
+  function walk(part: gmail_v1.Schema$MessagePart): void {
+    if (part.body?.attachmentId && part.filename) {
+      results.push({
+        attachmentId: part.body.attachmentId,
+        filename: part.filename,
+        mimeType: part.mimeType ?? 'application/octet-stream',
+        size: part.body.size ?? 0,
+      });
+    }
+    for (const child of part.parts ?? []) {
+      walk(child);
+    }
+  }
+
+  walk(payload);
+  return results;
 }
 
 function getHeader(
@@ -168,6 +216,7 @@ export async function handleEmailTool(
 
     const headers = res.data.payload?.headers;
     const body = extractBody(res.data.payload);
+    const attachments = extractAttachments(res.data.payload);
 
     return JSON.stringify(
       {
@@ -180,6 +229,7 @@ export async function handleEmailTool(
         date: getHeader(headers, 'Date'),
         snippet: res.data.snippet ?? '',
         body,
+        attachments,
         labels: res.data.labelIds ?? [],
       },
       null,
@@ -203,6 +253,26 @@ export async function handleEmailTool(
 
     const summaries = await fetchSummaries(gmail, messages);
     return JSON.stringify({ results: summaries, query, total: summaries.length }, null, 2);
+  }
+
+  if (name === 'download_attachment') {
+    const { messageId, attachmentId } = args as { messageId: string; attachmentId: string };
+
+    const res = await gmail.users.messages.attachments.get({
+      userId: 'me',
+      messageId,
+      id: attachmentId,
+    });
+
+    return JSON.stringify(
+      {
+        attachmentId,
+        size: res.data.size ?? 0,
+        data: res.data.data, // base64url-encoded content
+      },
+      null,
+      2,
+    );
   }
 
   throw new Error(`Unknown email tool: ${name}`);

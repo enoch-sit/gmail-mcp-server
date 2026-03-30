@@ -1,6 +1,6 @@
 # Gmail MCP Server
 
-A comprehensive **Model Context Protocol (MCP) server** for Gmail, with 11 tools, an interactive CLI setup wizard, a browser-based Web UI wizard, and full Docker support.
+A comprehensive **Model Context Protocol (MCP) server** for Gmail, with 17 tools, an interactive CLI setup wizard, a browser-based Web UI wizard, and full Docker support.
 
 ---
 
@@ -11,6 +11,11 @@ A comprehensive **Model Context Protocol (MCP) server** for Gmail, with 11 tools
 | `list_emails` | List emails from inbox or any label with optional query filter |
 | `read_email` | Read full email content (headers + decoded body) |
 | `search_emails` | Search using Gmail query syntax |
+| `list_attachments_with_safety` | List message attachments with policy-based safety checks |
+| `validate_attachment` | Validate one attachment against local file safety policy |
+| `download_attachment_safe` | Download attachment only if it passes safety policy checks |
+| `redact_text_local` | Redact sensitive text through local privacy pipeline |
+| `read_email_with_privacy` | Read one email with privacy-redacted subject/snippet/body |
 | `send_email` | Send plain-text or HTML emails |
 | `create_draft` | Create email drafts without sending |
 | `reply_to_email` | Reply to an email thread (preserves threading headers) |
@@ -20,6 +25,21 @@ A comprehensive **Model Context Protocol (MCP) server** for Gmail, with 11 tools
 | `set_labels` | Add/remove labels on an email |
 | `get_labels` | List all Gmail labels with message counts |
 | `get_profile` | Get authenticated user profile info |
+
+Attachment safety policy defaults are defined in `src/config/attachment-policy.json`.
+Privacy policy defaults are defined in `src/config/privacy-policy.json`.
+
+Optional local privacy stack (vLLM + privacy orchestrator) can be started with Docker profiles:
+
+```bash
+docker compose --profile privacy up --build
+```
+
+The privacy profile also enables optional persistent services:
+- **Redis** (`redis:6379`) — token store for session-aware PII re-identification (future feature)
+- **SQLite** (`audit.db`) — audit log of all PII detections and redactions for compliance
+
+See [ARCHITECTURE.md](ARCHITECTURE.md#persistent-data-layer-optional) for database design details.
 
 ---
 
